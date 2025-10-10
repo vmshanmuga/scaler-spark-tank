@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scaler Spark Tank 2025 - Live Leaderboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Animated Background -->
+    <div class="dashboard-bg">
+      <div class="bg-orb bg-orb-1"></div>
+      <div class="bg-orb bg-orb-2"></div>
+      <div class="bg-orb bg-orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/090/511/original/Copy_of_Logo-White.png?1727164234" alt="Scaler Logo" class="header-logo">
+
+        <div class="header-title">
+          <h1>SPARK TANK 2025 - LIVE LEADERBOARD</h1>
+          <div class="live-indicator">
+            <span class="live-dot"></span>
+            <span>LIVE</span>
+            <span>•</span>
+            <span id="lastUpdated">Last updated: --</span>
+          </div>
+        </div>
+
+        <div class="theme-toggle" id="themeToggle">
+          <div class="theme-toggle-slider" id="themeSlider">
+            <span class="theme-icon">🌙</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Loading State -->
+      <div class="loading-container" id="loadingState">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading leaderboard...</p>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="leaderboard" id="leaderboard" style="display: none;">
+        <!-- Leaderboard cards will be inserted here -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-state-icon">📊</div>
+        <h2>No Data Available</h2>
+        <p>The leaderboard will appear once sales data is synced from Google Sheets.</p>
+      </div>
+    </main>
+
+    <!-- Recent Transactions Ticker -->
+    <div class="transactions-ticker" id="transactionsTicker" style="display: none;">
+      <div class="ticker-content" id="tickerContent">
+        <!-- Transaction items will be duplicated here for seamless scroll -->
+      </div>
+    </div>
+
+    <!-- Sale Celebration Overlay -->
+    <div class="sale-celebration" id="saleCelebration">
+      <div class="celebration-flash"></div>
+      <div class="celebration-banner">
+        <h2>🎉 NEW SALE!</h2>
+        <p id="celebrationText"></p>
+      </div>
+      <div class="confetti-container" id="confettiContainer"></div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="/js/firebase-config.js"></script>
+
+  <!-- Dashboard Script -->
+  <script src="/js/dashboard.js"></script>
+
+  <script>
+    // Initialize dashboard (no auth required for public view)
+    initDashboard();
+
+    // Auto-enter fullscreen on F11
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'F11') {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+    });
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error('Fullscreen error:', err);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>

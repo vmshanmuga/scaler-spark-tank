@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Colors - Scaler Spark Tank</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #000000;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666666;
+      margin-bottom: 48px;
+      font-size: 16px;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+
+    .color-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .color-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .color-swatch {
+      height: 180px;
+      width: 100%;
+      position: relative;
+    }
+
+    .color-info {
+      padding: 24px;
+    }
+
+    .color-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #000000;
+      margin-bottom: 12px;
+    }
+
+    .color-values {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .color-value {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .color-value-label {
+      font-weight: 600;
+      color: #666666;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .color-value-code {
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-weight: 600;
+      color: #000000;
+    }
+
+    .copy-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+      font-size: 14px;
+    }
+
+    .copy-button:hover {
+      opacity: 1;
+    }
+
+    .gradient-section {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-top: 40px;
+    }
+
+    .gradient-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #000000;
+    }
+
+    .gradient-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .gradient-item {
+      height: 120px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .usage-section {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-top: 40px;
+    }
+
+    .usage-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #000000;
+    }
+
+    .usage-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .usage-item {
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+
+    .usage-item h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .usage-item p {
+      font-size: 14px;
+      color: #666666;
+      line-height: 1.5;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .color-card:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Brand Color Palette</h1>
+    <p class="subtitle">Scaler Spark Tank 2025 • Official Brand Colors</p>
+
+    <!-- Color Grid -->
+    <div class="color-grid">
+      <!-- Dark Sea Green -->
+      <div class="color-card">
+        <div class="color-swatch" style="background: #1d8f5b;"></div>
+        <div class="color-info">
+          <div class="color-name">Dark Sea Green</div>
+          <div class="color-values">
+            <div class="color-value">
+              <span class="color-value-label">HEX</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="color-value-code">#1d8f5b</span>
+                <button class="copy-button" onclick="copyToClipboard('#1d8f5b')">📋</button>
+              </div>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">RGB</span>
+              <span class="color-value-code">29, 143, 91</span>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">CMYK</span>
+              <span class="color-value-code">84/20/82/05</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Golden Poppy -->
+      <div class="color-card">
+        <div class="color-swatch" style="background: #ffc300;"></div>
+        <div class="color-info">
+          <div class="color-name">Golden Poppy</div>
+          <div class="color-values">
+            <div class="color-value">
+              <span class="color-value-label">HEX</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="color-value-code">#ffc300</span>
+                <button class="copy-button" onclick="copyToClipboard('#ffc300')">📋</button>
+              </div>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">RGB</span>
+              <span class="color-value-code">255, 195, 0</span>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">CMYK</span>
+              <span class="color-value-code">00/24/100/00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shadow Gray -->
+      <div class="color-card">
+        <div class="color-swatch" style="background: #3a3a3a;"></div>
+        <div class="color-info">
+          <div class="color-name">Shadow Gray</div>
+          <div class="color-values">
+            <div class="color-value">
+              <span class="color-value-label">HEX</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="color-value-code">#3a3a3a</span>
+                <button class="copy-button" onclick="copyToClipboard('#3a3a3a')">📋</button>
+              </div>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">RGB</span>
+              <span class="color-value-code">58, 58, 58</span>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">CMYK</span>
+              <span class="color-value-code">69/62/61/52</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Super Silver -->
+      <div class="color-card">
+        <div class="color-swatch" style="background: #f4f4f4; border: 1px solid #e0e0e0;"></div>
+        <div class="color-info">
+          <div class="color-name">Super Silver</div>
+          <div class="color-values">
+            <div class="color-value">
+              <span class="color-value-label">HEX</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="color-value-code">#f4f4f4</span>
+                <button class="copy-button" onclick="copyToClipboard('#f4f4f4')">📋</button>
+              </div>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">RGB</span>
+              <span class="color-value-code">244, 244, 244</span>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">CMYK</span>
+              <span class="color-value-code">03/02/02/00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Natural Black -->
+      <div class="color-card">
+        <div class="color-swatch" style="background: #000000;"></div>
+        <div class="color-info">
+          <div class="color-name">Natural Black</div>
+          <div class="color-values">
+            <div class="color-value">
+              <span class="color-value-label">HEX</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="color-value-code">#000000</span>
+                <button class="copy-button" onclick="copyToClipboard('#000000')">📋</button>
+              </div>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">RGB</span>
+              <span class="color-value-code">0, 0, 0</span>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">CMYK</span>
+              <span class="color-value-code">75/68/67/90</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pure White -->
+      <div class="color-card">
+        <div class="color-swatch" style="background: #ffffff; border: 1px solid #e0e0e0;"></div>
+        <div class="color-info">
+          <div class="color-name">Pure White</div>
+          <div class="color-values">
+            <div class="color-value">
+              <span class="color-value-label">HEX</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="color-value-code">#ffffff</span>
+                <button class="copy-button" onclick="copyToClipboard('#ffffff')">📋</button>
+              </div>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">RGB</span>
+              <span class="color-value-code">255, 255, 255</span>
+            </div>
+            <div class="color-value">
+              <span class="color-value-label">CMYK</span>
+              <span class="color-value-code">00/00/00/00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gradient Showcase -->
+    <div class="gradient-section">
+      <h2>Brand Gradients</h2>
+      <div class="gradient-showcase">
+        <div class="gradient-item" style="background: linear-gradient(135deg, #1d8f5b, #156943);">
+          Primary Gradient
+        </div>
+        <div class="gradient-item" style="background: linear-gradient(135deg, #ffc300, #e6b000);">
+          Secondary Gradient
+        </div>
+        <div class="gradient-item" style="background: linear-gradient(135deg, #1d8f5b, #ffc300);">
+          Brand Gradient
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage Guidelines -->
+    <div class="usage-section">
+      <h2>Usage Guidelines</h2>
+      <div class="usage-grid">
+        <div class="usage-item" style="border-color: #1d8f5b;">
+          <h3>Dark Sea Green - Primary</h3>
+          <p>Use for primary actions, links, success states, and key brand moments. This is our primary brand color representing growth and success.</p>
+        </div>
+        <div class="usage-item" style="border-color: #ffc300;">
+          <h3>Golden Poppy - Accent</h3>
+          <p>Use for highlights, awards, medals, and special achievements. Creates energy and draws attention to important elements.</p>
+        </div>
+        <div class="usage-item" style="border-color: #3a3a3a;">
+          <h3>Shadow Gray - Text & UI</h3>
+          <p>Primary text color for light backgrounds. Use for headings, body copy, and UI elements requiring strong contrast.</p>
+        </div>
+        <div class="usage-item" style="border-color: #f4f4f4;">
+          <h3>Super Silver - Backgrounds</h3>
+          <p>Light theme background color. Creates clean, modern layouts with excellent readability.</p>
+        </div>
+        <div class="usage-item" style="border-color: #000000;">
+          <h3>Natural Black - Backgrounds</h3>
+          <p>Dark theme background color. Provides premium feel and reduces eye strain in low-light environments.</p>
+        </div>
+        <div class="usage-item" style="border-color: #ffffff;">
+          <h3>Pure White - Text & Cards</h3>
+          <p>Text on dark backgrounds, card backgrounds, and clean surfaces. Ensures maximum readability and clarity.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Show toast or feedback
+        alert(`Copied ${text} to clipboard!`);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+    }
+  </script>
+</body>
+</html>

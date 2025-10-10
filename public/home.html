@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Scaler Spark Tank 2025</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css?v=1760092662">
+  <link rel="stylesheet" href="/css/sidebar.css?v=1760092662">
+
+  <!-- Initialize theme before page loads -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Collapsible Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/090/511/original/Copy_of_Logo-White.png?1727164234" alt="Scaler Logo" class="sidebar-logo">
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <span class="toggle-icon">‹</span>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item active">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="/groupview" class="nav-item" id="groupViewNav">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Group View</span>
+        </a>
+        <a href="/admin" class="nav-item" id="adminNav" style="display: none;">
+          <span class="nav-icon">🔧</span>
+          <span class="nav-label">Admin</span>
+        </a>
+        <a href="/settings" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-area">
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle">
+            <span class="menu-icon">☰</span>
+          </button>
+
+          <div class="breadcrumb">
+            <a href="/home" class="breadcrumb-item">Home</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active">Home</span>
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <a href="/live-dashboard.html" class="btn-live-dashboard" id="viewLiveBtn">
+            <span class="live-pulse"></span>
+            <span>View Live Dashboard</span>
+          </a>
+        </div>
+
+        <div class="topbar-right">
+          <button class="theme-toggle-btn" id="themeToggle" title="Toggle theme">
+            <span class="theme-icon">🌙</span>
+          </button>
+
+          <button class="power-btn" id="signOutBtn" title="Sign out">
+            <span class="power-icon">⏻</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Animated Background -->
+      <div class="dashboard-bg">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="content-area">
+        <!-- Stats Cards -->
+        <section class="stats-section">
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-details">
+              <div class="stat-label">Total Sales</div>
+              <div class="stat-value" id="totalSales">₹0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-details">
+              <div class="stat-label">Total Orders</div>
+              <div class="stat-value" id="totalOrders">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-details">
+              <div class="stat-label">Active Teams</div>
+              <div class="stat-value" id="activeTeams">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-details">
+              <div class="stat-label">Avg Order Value</div>
+              <div class="stat-value" id="avgOrderValue">₹0</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section class="leaderboard-section">
+          <div class="section-header">
+            <h2 class="section-title">🏆 Leaderboard</h2>
+            <div class="live-indicator">
+              <span class="live-dot"></span>
+              <span>LIVE</span>
+              <span>•</span>
+              <span id="lastUpdated">Last updated: --</span>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div class="loading-container" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading leaderboard...</p>
+          </div>
+
+          <!-- Leaderboard -->
+          <div class="leaderboard" id="leaderboard" style="display: none;">
+            <!-- Leaderboard cards will be inserted here -->
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">📊</div>
+            <h2>No Data Available</h2>
+            <p>The leaderboard will appear once sales data is synced from Google Sheets.</p>
+          </div>
+        </section>
+
+        <!-- Recent Transactions Section -->
+        <section class="transactions-section">
+          <div class="section-header">
+            <h2 class="section-title">💳 Recent Transactions</h2>
+          </div>
+
+          <div class="transactions-ticker" id="transactionsTicker" style="display: none;">
+            <div class="ticker-content" id="tickerContent">
+              <!-- Transaction items will be duplicated here for seamless scroll -->
+            </div>
+          </div>
+
+          <div class="transactions-list" id="transactionsList">
+            <!-- Recent transactions will be displayed here -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Sale Celebration Overlay -->
+    <div class="sale-celebration" id="saleCelebration">
+      <div class="celebration-flash"></div>
+      <div class="celebration-banner">
+        <h2>🎉 NEW SALE!</h2>
+        <p id="celebrationText"></p>
+      </div>
+      <div class="confetti-container" id="confettiContainer"></div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="/js/firebase-config.js"></script>
+
+  <!-- Dashboard Script -->
+  <script src="/js/dashboard.js?v=4"></script>
+  <script src="/js/shared-sidebar.js?v=2"></script>
+
+  <script>
+    // Check authentication
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = '/';
+        return;
+      }
+
+      // Check access
+      const hasAccess = await checkUserAccess(user.email);
+      if (!hasAccess) {
+        alert('Access Denied');
+        await auth.signOut();
+        window.location.href = '/';
+        return;
+      }
+
+      // Initialize shared sidebar (handles admin nav automatically)
+      await initSharedSidebar(user);
+
+      // Initialize dashboard
+      initDashboard();
+    });
+
+    // Sign out
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+      if (confirm('Are you sure you want to sign out?')) {
+        await signOut();
+      }
+    });
+
+    // View Live Dashboard
+    document.getElementById('viewLiveBtn')?.addEventListener('click', () => {
+      window.open('/live-dashboard.html', '_blank');
+    });
+
+    // Theme toggle - direct implementation
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      const themeIcon = document.querySelector('#themeToggle .theme-icon');
+      if (themeIcon) {
+        themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+      }
+
+      console.log('Theme switched to:', newTheme);
+    });
+  </script>
+</body>
+</html>

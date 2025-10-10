@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "sparkTank": {
+      ".read": "auth != null",
+      ".write": true,
+      "leaderboard": {
+        ".indexOn": ["rank", "totalSales"]
+      },
+      "recentTransactions": {
+        ".indexOn": ["timestamp"]
+      }
+    },
+    "access": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "adminControl": {
+      ".read": "auth != null && auth.token.email == 'sparktank@ssb.scaler.com'",
+      ".write": "auth != null && auth.token.email == 'sparktank@ssb.scaler.com'"
+    }
+  }
+}

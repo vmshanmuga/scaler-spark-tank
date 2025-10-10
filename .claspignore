@@ -1,0 +1,36 @@
+# Ignore everything in public folder
+public/**
+
+# Ignore Firebase files
+firebase.json
+.firebaserc
+database.rules.json
+
+# Ignore documentation
+*.md
+README.md
+SETUP.md
+DEPLOYMENT.md
+QUICKSTART.md
+PROJECT_STRUCTURE.md
+
+# Ignore git files
+.gitignore
+.git/**
+
+# Ignore node modules
+node_modules/**
+
+# Ignore IDE files
+.vscode/**
+.idea/**
+
+# Ignore google-apps-script folder (was created by mistake)
+google-apps-script/**
+
+# Ignore Claude folder
+.claude/**
+
+# Only push Backend_Firebase.js and appsscript.json
+Backend_Firebase.backup.js
+backups/**

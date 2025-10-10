@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Scaler Spark Tank 2025</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css?v=1760092662">
+  <link rel="stylesheet" href="/css/sidebar.css?v=1760092662">
+
+  <!-- Initialize theme before page loads -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Collapsible Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/090/511/original/Copy_of_Logo-White.png?1727164234" alt="Scaler Logo" class="sidebar-logo">
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <span class="toggle-icon">‹</span>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="/groupview" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Group View</span>
+        </a>
+        <a href="/admin" class="nav-item active" id="adminNav" style="display: none;">
+          <span class="nav-icon">🔧</span>
+          <span class="nav-label">Admin</span>
+        </a>
+        <a href="/settings" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-area">
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle">
+            <span class="menu-icon">☰</span>
+          </button>
+
+          <div class="breadcrumb">
+            <a href="/home" class="breadcrumb-item">Home</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active">Admin</span>
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <a href="/live-dashboard.html" class="btn-live-dashboard" id="viewLiveBtn">
+            <span class="live-pulse"></span>
+            <span>View Live Dashboard</span>
+          </a>
+        </div>
+
+        <div class="topbar-right">
+          <button class="theme-toggle-btn" id="themeToggle" title="Toggle theme">
+            <span class="theme-icon">🌙</span>
+          </button>
+
+          <button class="power-btn" id="signOutBtn" title="Sign out">
+            <span class="power-icon">⏻</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Animated Background -->
+      <div class="dashboard-bg">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="content-area">
+        <div style="text-align: center; padding: 80px 20px;">
+          <div style="font-size: 6rem; margin-bottom: 20px;">🔧</div>
+          <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 16px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Admin Panel</h1>
+          <p style="font-size: 1.5rem; color: var(--color-text-secondary); margin-bottom: 40px;">Advanced admin features coming soon</p>
+          <div style="display: inline-block; padding: 16px 32px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;">
+            <p style="color: var(--color-text-secondary); margin: 0;">This page will include:</p>
+            <ul style="list-style: none; padding: 0; margin: 20px 0 0 0; text-align: left;">
+              <li style="padding: 8px 0; color: var(--color-text-primary);">📊 Advanced analytics and reports</li>
+              <li style="padding: 8px 0; color: var(--color-text-primary);">👥 User management</li>
+              <li style="padding: 8px 0; color: var(--color-text-primary);">⚙️ System configuration</li>
+              <li style="padding: 8px 0; color: var(--color-text-primary);">🔄 Manual data sync controls</li>
+              <li style="padding: 8px 0; color: var(--color-text-primary);">📈 Real-time monitoring</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="/js/firebase-config.js"></script>
+
+  <!-- Shared Sidebar -->
+  <script src="/js/shared-sidebar.js?v=2"></script>
+
+  <script>
+    // Check authentication and admin access
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = '/';
+        return;
+      }
+
+      // Check if admin
+      const isUserAdmin = await isAdmin(user.email);
+      if (!isUserAdmin) {
+        alert('Access Denied: Admin access required');
+        window.location.href = '/home';
+        return;
+      }
+
+      // Initialize shared sidebar (handles admin nav automatically)
+      await initSharedSidebar(user);
+    });
+
+    // View Live Dashboard
+    document.getElementById('viewLiveBtn')?.addEventListener('click', () => {
+      window.open('/live-dashboard.html', '_blank');
+    });
+
+    // Theme toggle - direct implementation
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      const themeIcon = document.querySelector('#themeToggle .theme-icon');
+      if (themeIcon) {
+        themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+      }
+
+      console.log('Theme switched to:', newTheme);
+    });
+
+    // Sign out
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+      if (confirm('Are you sure you want to sign out?')) {
+        await signOut();
+      }
+    });
+  </script>
+</body>
+</html>
