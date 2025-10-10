@@ -1,45 +1,27 @@
 # Firebase
 .firebase/
-.firebaserc
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
-database-debug.log
 
-# Node modules
+# Node
 node_modules/
 npm-debug.log
 yarn-error.log
-
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Build files
-dist/
-build/
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # Logs
 *.log
-logs/
 
-# Temporary files
-*.tmp
-.cache/
-
-# Sensitive data (do NOT commit)
-*secret*
-*credentials*
-service-account-key.json
+# Env
+.env
+.env.local
