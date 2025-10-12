@@ -1,0 +1,424 @@
+.login-page {
+  font-family: 'Montserrat', sans-serif;
+  background: #000000;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+}
+
+/* Black Hole Container */
+.blackhole-container {
+  position: fixed;
+  bottom: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 5;
+}
+
+#starsContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Half Black Hole at Bottom */
+.blackhole-core {
+  position: absolute;
+  bottom: -350px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(
+    circle at center,
+    #000000 0%,
+    #000000 30%,
+    rgba(29, 143, 91, 0.6) 50%,
+    rgba(29, 143, 91, 0.3) 70%,
+    rgba(29, 143, 91, 0.1) 85%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  filter: blur(40px);
+  box-shadow:
+    0 0 150px rgba(29, 143, 91, 0.6),
+    0 0 300px rgba(29, 143, 91, 0.4),
+    0 0 450px rgba(29, 143, 91, 0.2);
+  animation: gentleGlow 4s ease-in-out infinite;
+}
+
+@keyframes gentleGlow {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Stars Being Sucked */
+.star {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+  animation: starSuck linear infinite;
+  z-index: 999;
+  will-change: left, top, transform, opacity;
+}
+
+@keyframes starSuck {
+  0% {
+    opacity: 0.5;
+    transform: translate(0, 0) scale(1);
+    filter: brightness(0.5);
+  }
+  70% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(var(--delta-x), var(--delta-y)) scale(3);
+    filter: brightness(2);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  }
+  100% {
+    transform: translate(var(--delta-x), var(--delta-y)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Main Container */
+.login-container {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  align-items: center;
+  padding: 40px 100px 40px 60px;
+  gap: 100px;
+}
+
+/* Left Side - Content */
+.left-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  padding-left: 40px;
+  animation: fadeInLeft 0.8s ease-out;
+  text-align: center;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Logo */
+.logo {
+  width: 260px;
+  height: auto;
+  margin-bottom: 30px;
+}
+
+/* Badge */
+.competition-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  width: fit-content;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.competition-badge::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  animation: sparkleMove 3s linear infinite;
+}
+
+@keyframes sparkleMove {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  25% {
+    top: 0;
+    left: calc(100% - 8px);
+  }
+  50% {
+    top: calc(100% - 8px);
+    left: calc(100% - 8px);
+  }
+  75% {
+    top: calc(100% - 8px);
+    left: 0;
+  }
+  100% {
+    top: 0;
+    left: 0;
+  }
+}
+
+/* Main Title */
+.main-title {
+  font-size: 96px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 20px;
+  white-space: nowrap;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: 20px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 500px;
+  overflow: hidden;
+  border-right: 2px solid rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  animation: typewriter 3s steps(44) 1s forwards, blinkCursor 0.75s step-end infinite 1s, removeCursor 0.1s forwards 4s;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blinkCursor {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+@keyframes removeCursor {
+  to {
+    border-right: none;
+  }
+}
+
+.subtitle.typed {
+  border-right: none;
+  animation: none;
+  white-space: normal;
+}
+
+/* Right Side - Login Card */
+.right-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10%;
+  padding-right: 0;
+  animation: fadeInRight 0.8s ease-out;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Login Card */
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 48px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+}
+
+.card-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.card-subtitle {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+/* Google Sign-In Button */
+.google-signin-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000000;
+  background: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.google-signin-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.google-signin-btn:active {
+  transform: translateY(0);
+}
+
+.google-signin-btn:disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Footer */
+.card-footer {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: #1D8F5B;
+  font-weight: 500;
+}
+
+/* Error Message */
+.error-message {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #EF4444;
+  font-size: 13px;
+  display: none;
+  animation: shake 0.4s ease-out;
+}
+
+.error-message.show {
+  display: block;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .main-title {
+    font-size: 72px;
+  }
+
+  .left-content {
+    padding: 0 40px;
+  }
+}
+
+@media (max-width: 968px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    gap: 60px;
+    padding: 40px 20px;
+  }
+
+  .left-content {
+    padding: 0;
+  }
+
+  .main-title {
+    font-size: 64px;
+  }
+
+  .subtitle {
+    max-width: 100%;
+  }
+
+  .right-content {
+    width: 100%;
+  }
+
+  .login-card {
+    max-width: 440px;
+  }
+}
+
+@media (max-width: 640px) {
+  .main-title {
+    font-size: 48px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .login-card {
+    padding: 36px 28px;
+  }
+
+  .logo {
+    width: 180px;
+  }
+}

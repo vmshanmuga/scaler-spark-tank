@@ -1,0 +1,38 @@
+/* ========== SPARK TANK - UNIFIED STYLES ========== */
+/* Main entry point for all styles - Import this in your React app */
+
+/* 1. CSS Variables - Must be imported first */
+@import './variables.css';
+
+/* 2. Theme Definitions - Dark/Light themes */
+@import './themes.css';
+
+/* 3. Global Styles - Base styles, typography, animations */
+@import './global.css';
+
+/* 4. Component Styles */
+@import './sidebar.css';
+@import './leaderboard.css';
+@import './dashboard.css';
+
+/* ========== USAGE IN REACT ========== */
+/*
+  In your main.jsx or App.jsx, import this file:
+
+  import './styles/index.css'
+
+  This will load all styles in the correct order.
+*/
+
+/* ========== THEME SWITCHING ========== */
+/*
+  To switch themes in React, set the data-theme attribute on document.documentElement:
+
+  // Dark theme (default)
+  document.documentElement.setAttribute('data-theme', 'dark');
+
+  // Light theme
+  document.documentElement.setAttribute('data-theme', 'light');
+
+  You can also use a theme context/hook to manage this globally.
+*/

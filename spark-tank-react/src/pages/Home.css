@@ -1,0 +1,497 @@
+/* ========== LEADERBOARD STYLES - SIMPLE & WORKING ========== */
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: none;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Custom scrollbar styling */
+.leaderboard::-webkit-scrollbar {
+  width: 8px;
+}
+
+.leaderboard::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.leaderboard::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.leaderboard::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.leaderboard-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1d8f5b, #ffc300);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.leaderboard-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #1d8f5b;
+}
+
+.leaderboard-card:hover::before {
+  opacity: 1;
+}
+
+/* Rank 1 - Gold */
+.leaderboard-card[data-rank="1"] {
+  border-color: #ffc300;
+  background: rgba(255, 195, 0, 0.05);
+}
+
+.leaderboard-card[data-rank="1"]::before {
+  background: linear-gradient(90deg, #ffc300, #ffd700);
+  opacity: 1;
+}
+
+/* Rank 2 - Silver */
+.leaderboard-card[data-rank="2"] {
+  border-color: #c0c0c0;
+  background: rgba(192, 192, 192, 0.05);
+}
+
+.leaderboard-card[data-rank="2"]::before {
+  background: linear-gradient(90deg, #c0c0c0, #d3d3d3);
+  opacity: 1;
+}
+
+/* Rank 3 - Bronze */
+.leaderboard-card[data-rank="3"] {
+  border-color: #cd7f32;
+  background: rgba(205, 127, 50, 0.05);
+}
+
+.leaderboard-card[data-rank="3"]::before {
+  background: linear-gradient(90deg, #cd7f32, #b8732a);
+  opacity: 1;
+}
+
+.card-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.card-right {
+  text-align: right;
+}
+
+.total-sales-label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.total-sales-value {
+  font-size: 32px;
+  font-weight: 900;
+  color: #1d8f5b;
+  line-height: 1;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.rank-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.rank-number {
+  font-size: 20px;
+  color: #888;
+  font-weight: 700;
+}
+
+.team-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.team-name {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.team-members {
+  font-size: 14px;
+  color: #888;
+  font-weight: 500;
+}
+
+.hustle-message {
+  padding: 20px 30px;
+  background: linear-gradient(135deg, rgba(255, 195, 0, 0.1), rgba(29, 143, 91, 0.1));
+  border: 2px dashed rgba(255, 195, 0, 0.3);
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffc300;
+  text-align: center;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.card-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 100px !important;
+  flex-wrap: nowrap;
+  width: 100%;
+  padding-left: 80px;
+}
+
+.stat-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 14px 18px;
+  min-width: 140px;
+}
+
+.stat-icon-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.stat-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stat-box .stat-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 8px 14px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+}
+
+.status-text {
+  font-size: 12px;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.sales-amount {
+  text-align: right;
+}
+
+.amount-value {
+  font-size: 40px;
+  font-weight: 900;
+  color: #1d8f5b;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.amount-label {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.stats {
+  display: flex;
+  gap: 32px;
+  width: 100%;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.trend-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.trend-indicator.down {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* Light Theme */
+[data-theme="light"] .leaderboard-card {
+  background: #fff;
+  border-color: #e5e5e5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .leaderboard-card:hover {
+  background: #fafafa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .leaderboard-card[data-rank="1"] {
+  background: linear-gradient(135deg, #fff 0%, rgba(255, 195, 0, 0.05) 100%);
+}
+
+[data-theme="light"] .leaderboard-card[data-rank="2"] {
+  background: linear-gradient(135deg, #fff 0%, rgba(192, 192, 192, 0.05) 100%);
+}
+
+[data-theme="light"] .leaderboard-card[data-rank="3"] {
+  background: linear-gradient(135deg, #fff 0%, rgba(205, 127, 50, 0.05) 100%);
+}
+
+[data-theme="light"] .team-name {
+  color: #000;
+}
+
+[data-theme="light"] .team-members {
+  color: #666;
+}
+
+[data-theme="light"] .rank-number {
+  color: #666;
+}
+
+[data-theme="light"] .stat-value {
+  color: #000;
+}
+
+[data-theme="light"] .stat-item .stat-value {
+  color: #000;
+}
+
+[data-theme="light"] .stat-box {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: #e5e5e5;
+}
+
+[data-theme="light"] .stat-box .stat-value {
+  color: #000;
+}
+
+[data-theme="light"] .stat-label {
+  color: #666;
+}
+
+[data-theme="light"] .total-sales-label {
+  color: #666;
+}
+
+[data-theme="light"] .total-sales-value {
+  color: #1d8f5b;
+}
+
+[data-theme="light"] .amount-label {
+  color: #666;
+}
+
+[data-theme="light"] .leaderboard::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .leaderboard::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .leaderboard::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .hustle-message {
+  background: linear-gradient(135deg, rgba(255, 195, 0, 0.15), rgba(29, 143, 91, 0.15));
+  border-color: rgba(255, 195, 0, 0.5);
+  color: #d4a500;
+}
+
+[data-theme="light"] .card-divider {
+  background: #e5e5e5;
+}
+
+[data-theme="light"] .card-footer {
+  border-top-color: #e5e5e5;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .amount-value {
+    font-size: 32px;
+  }
+
+  .team-name {
+    font-size: 24px;
+  }
+
+  .rank-badge {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .leaderboard-card {
+    padding: 24px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sales-amount {
+    text-align: left;
+    width: 100%;
+  }
+
+  .amount-value {
+    font-size: 28px;
+  }
+
+  .team-name {
+    font-size: 20px;
+  }
+
+  .rank-badge {
+    font-size: 24px;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .stats {
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .card-stats {
+    gap: 24px;
+  }
+
+  .stat-item .stat-value {
+    font-size: 16px;
+  }
+
+  .stat-icon {
+    font-size: 18px;
+  }
+}

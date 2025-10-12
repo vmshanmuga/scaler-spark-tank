@@ -319,20 +319,17 @@ function calculateLeaderboard(masterData, paymentsData) {
 /**
  * Get recent transactions
  */
-function getRecentTransactions(paymentsData, masterData, limit = 20) {
-  // Filter only order.paid and payment_link.paid events to avoid duplicates
-  const successfulPayments = paymentsData.filter(payment => {
-    const eventType = payment['Event Type'];
-    const status = payment['Status'];
-    return (eventType === 'order.paid' || eventType === 'payment_link.paid') &&
-           (status === 'paid');
+function getRecentTransactions(paymentsData, masterData, limit = 50) {
+  // Show ALL payment events (not just paid ones)
+  const allPayments = paymentsData.filter(payment => {
+    return payment['Event Type'] && payment['Timestamp']; // Only need valid event type and timestamp
   });
 
   // Sort by timestamp (newest first)
-  successfulPayments.sort((a, b) => new Date(b['Timestamp']) - new Date(a['Timestamp']));
+  allPayments.sort((a, b) => new Date(b['Timestamp']) - new Date(a['Timestamp']));
 
   // Take only recent ones
-  const recentPayments = successfulPayments.slice(0, limit);
+  const recentPayments = allPayments.slice(0, limit);
 
   // Map to transaction objects with team names
   return recentPayments.map(payment => {
@@ -354,7 +351,8 @@ function getRecentTransactions(paymentsData, masterData, limit = 20) {
       amount: parseFloat(payment['Amount']) || 0, // Show amount as-is from sheet
       timestamp: payment['Timestamp'],
       paymentId: payment['Entity ID'] || '',
-      status: payment['Status']
+      status: payment['Status'],
+      eventType: payment['Event Type'] // Include event type
     };
   });
 }

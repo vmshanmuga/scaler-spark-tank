@@ -1,0 +1,205 @@
+/* Dropshipping Loader Styles */
+
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 2rem;
+}
+
+.loader-container {
+  position: relative;
+}
+
+/* Animations */
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Outer orbital ring */
+.loader-ring {
+  position: relative;
+  width: 256px;
+  height: 256px;
+}
+
+/* Rotating dots */
+.loader-dot {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s;
+}
+
+.loader-dot-inner {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s;
+}
+
+.loader-dot-inner.active {
+  background: white;
+  transform: translateX(-50%) scale(1.5);
+}
+
+.loader-dot-inner.inactive {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Inner morphing shape container */
+.loader-shape-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-svg {
+  overflow: visible;
+}
+
+.loader-path {
+  transition: all 0.7s;
+}
+
+.loader-fill {
+  transition: all 0.7s;
+}
+
+/* Rotating connection line */
+.loader-connection-line {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s linear;
+}
+
+.loader-line {
+  width: 1px;
+  height: 96px;
+  background: linear-gradient(to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* Stage label */
+.loader-stage-label {
+  position: absolute;
+  bottom: -64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 256px;
+  text-align: center;
+}
+
+.loader-stage-text-container {
+  position: relative;
+  height: 32px;
+  overflow: hidden;
+}
+
+.loader-stage-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+}
+
+/* Progress indicator */
+.loader-progress-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 24px;
+}
+
+.loader-progress-dot {
+  height: 1px;
+  transition: all 0.5s;
+}
+
+/* Percentage */
+.loader-percentage {
+  position: absolute;
+  bottom: -128px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Corner accent markers */
+.loader-corner-marker {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  transition: opacity 0.5s;
+}
+
+.loader-corner-marker-h {
+  width: 100%;
+  height: 1px;
+  background: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.loader-corner-marker-v {
+  width: 1px;
+  height: 100%;
+  background: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Center pulsing dot */
+.loader-pulse-dot {
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}

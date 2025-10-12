@@ -1,0 +1,109 @@
+/* ========== CSS CUSTOM PROPERTIES ========== */
+
+:root {
+  /* Brand Colors */
+  --brand-dark-sea-green: #1d8f5b;
+  --brand-golden-poppy: #ffc300;
+  --brand-shadow-gray: #3a3a3a;
+  --brand-super-silver: #f4f4f4;
+  --brand-natural-black: #000000;
+  --brand-pure-white: #ffffff;
+
+  /* Brand-based Gradients */
+  --color-primary: var(--brand-dark-sea-green);
+  --color-primary-dark: #156943;
+  --color-secondary: var(--brand-golden-poppy);
+  --color-secondary-dark: #e6b000;
+
+  /* Status Colors */
+  --color-success: var(--brand-dark-sea-green);
+  --color-error: #EF4444;
+  --color-warning: var(--brand-golden-poppy);
+  --color-info: #3B82F6;
+
+  /* Medals */
+  --color-gold: var(--brand-golden-poppy);
+  --color-silver: #C0C0C0;
+  --color-bronze: #CD7F32;
+
+  /* Shadcn Design Tokens - Dark Mode */
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 142 71% 34%;
+  --primary-foreground: 144 76% 97%;
+  --secondary: 45 100% 50%;
+  --secondary-foreground: 45 100% 10%;
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 0 0% 14.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 142 71% 34%;
+  --radius: 0.5rem;
+
+  /* Theme Colors  */
+  --color-bg: hsl(var(--background));
+  --color-text-primary: hsl(var(--foreground));
+  --color-text-secondary: hsl(var(--muted-foreground));
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+[data-theme="light"] {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 3.9%;
+  --primary: 142 71% 34%;
+  --primary-foreground: 144 76% 97%;
+  --secondary: 45 100% 50%;
+  --secondary-foreground: 45 100% 10%;
+  --muted: 0 0% 96.1%;
+  --muted-foreground: 0 0% 45.1%;
+  --accent: 0 0% 96.1%;
+  --accent-foreground: 0 0% 9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 89.8%;
+  --input: 0 0% 89.8%;
+  --ring: 142 71% 34%;
+
+  --color-bg: hsl(var(--background));
+  --color-text-primary: hsl(var(--foreground));
+  --color-text-secondary: hsl(var(--muted-foreground));
+}
