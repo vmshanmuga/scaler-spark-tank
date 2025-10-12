@@ -40,7 +40,7 @@ export default function Topbar({
   };
 
   const handleViewLiveDashboard = () => {
-    window.open('/live-dashboard.html', '_blank');
+    window.open('/live-dashboard', '_blank');
   };
 
   return (

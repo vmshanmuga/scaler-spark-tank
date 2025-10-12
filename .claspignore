@@ -21,6 +21,9 @@ PROJECT_STRUCTURE.md
 # Ignore node modules
 node_modules/**
 
+# Ignore entire React project folder
+spark-tank-react/**
+
 # Ignore IDE files
 .vscode/**
 .idea/**
