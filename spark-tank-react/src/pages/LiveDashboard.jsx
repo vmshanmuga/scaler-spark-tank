@@ -268,14 +268,28 @@ export default function LiveDashboard() {
     return () => clearInterval(interval);
   }, [lastSyncData]);
 
-  // Leaderboard teams
+  // Leaderboard teams - separate teams with sales vs no sales
   const leaderboard = useMemo(() => {
     const teams = Array.isArray(leaderboardData) ? leaderboardData : [];
-    return teams.sort((a, b) => (b.totalSales || 0) - (a.totalSales || 0));
+
+    // Filter teams with sales/orders
+    const teamsWithSales = teams.filter(
+      team => (team.totalSales > 0) || (team.transactionCount > 0) || (team.orderCount > 0)
+    ).sort((a, b) => (b.totalSales || 0) - (a.totalSales || 0));
+
+    // Filter teams without any sales
+    const teamsWithoutSales = teams.filter(
+      team => (!team.totalSales || team.totalSales === 0) &&
+              (!team.transactionCount || team.transactionCount === 0) &&
+              (!team.orderCount || team.orderCount === 0)
+    );
+
+    return { teamsWithSales, teamsWithoutSales, all: [...teamsWithSales, ...teamsWithoutSales] };
   }, [leaderboardData]);
 
-  const topThree = leaderboard.slice(0, 3);
-  const remaining = leaderboard.slice(3);
+  const topThree = leaderboard.teamsWithSales.slice(0, 3);
+  const remaining = leaderboard.teamsWithSales.slice(3);
+  const unrankedTeams = leaderboard.teamsWithoutSales;
 
   // Get recent 20 transactions for feed
   const recentTransactions = paidTransactions.slice(0, 20);
@@ -450,8 +464,31 @@ export default function LiveDashboard() {
           </div>
         )}
 
+        {/* Unranked Teams */}
+        {unrankedTeams.length > 0 && (
+          <div className="live-dashboard-grid">
+            <h2 className="grid-title">⏳ Teams Yet to Make Their First Sale</h2>
+            <div className="leaderboard-grid">
+              {unrankedTeams.map((team, index) => (
+                <div key={team.teamName || index} className="leaderboard-card" style={{ opacity: 0.7 }}>
+                  <div className="leaderboard-rank" style={{ fontSize: '1.5rem' }}>➖</div>
+                  <div className="leaderboard-team-info">
+                    <div className="leaderboard-team-name">{team.teamName || 'Unknown Team'}</div>
+                    <div className="leaderboard-sales">
+                      {formatCurrency(0)}
+                    </div>
+                    <div className="leaderboard-orders" style={{ fontStyle: 'italic' }}>
+                      Ready to start!
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Empty State */}
-        {leaderboard.length === 0 && (
+        {leaderboard.all.length === 0 && (
           <div className="live-dashboard-empty">
             <div className="empty-icon">🏆</div>
             <h2>Competition Starting Soon</h2>

@@ -320,10 +320,8 @@
   margin-bottom: 32px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  background: var(--live-section-title-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--live-text-primary);
+  /* Remove gradient to preserve emoji colors */
 }
 
 .podium-cards {
@@ -848,10 +846,8 @@
   margin-bottom: 32px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  background: var(--live-section-title-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--live-text-primary);
+  /* Remove gradient to preserve emoji colors */
 }
 
 .transaction-feed {

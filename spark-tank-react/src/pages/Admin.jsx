@@ -527,18 +527,25 @@ export default function Admin() {
                 </div>
                 <div className="performers-list">
                   {topPerformers.length > 0 ? (
-                    topPerformers.map((team, index) => (
-                      <div key={team.teamName} className="performer-item top-performer">
-                        <div className="performer-rank">#{index + 1}</div>
-                        <div className="performer-info">
-                          <div className="performer-name">{team.teamName}</div>
-                          <div className="performer-stats">
-                            {team.periodOrders} orders • {formatCurrency(team.periodAvgOrderValue)} avg
+                    topPerformers.map((team, index) => {
+                      // Find actual rank from leaderboard
+                      const hasAllTimeSales = (team.totalSalesAllTime > 0) || (team.totalOrdersAllTime > 0);
+
+                      return (
+                        <div key={team.teamName} className="performer-item top-performer">
+                          <div className="performer-rank">
+                            {hasAllTimeSales ? `#${team.rank}` : '-'}
                           </div>
+                          <div className="performer-info">
+                            <div className="performer-name">{team.teamName}</div>
+                            <div className="performer-stats">
+                              {team.periodOrders} orders • {formatCurrency(team.periodAvgOrderValue)} avg
+                            </div>
+                          </div>
+                          <div className="performer-value">{formatCurrency(team.periodSales)}</div>
                         </div>
-                        <div className="performer-value">{formatCurrency(team.periodSales)}</div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <div className="empty-state-small">No sales in this period</div>
                   )}
@@ -553,18 +560,25 @@ export default function Admin() {
                 </div>
                 <div className="performers-list">
                   {bottomPerformers.length > 0 ? (
-                    bottomPerformers.map((team, index) => (
-                      <div key={team.teamName} className="performer-item bottom-performer">
-                        <div className="performer-rank">#{team.rank}</div>
-                        <div className="performer-info">
-                          <div className="performer-name">{team.teamName}</div>
-                          <div className="performer-stats">
-                            {team.periodOrders} orders • {formatCurrency(team.periodAvgOrderValue)} avg
+                    bottomPerformers.map((team, index) => {
+                      // Find actual rank from leaderboard
+                      const hasAllTimeSales = (team.totalSalesAllTime > 0) || (team.totalOrdersAllTime > 0);
+
+                      return (
+                        <div key={team.teamName} className="performer-item bottom-performer">
+                          <div className="performer-rank">
+                            {hasAllTimeSales ? `#${team.rank}` : '-'}
                           </div>
+                          <div className="performer-info">
+                            <div className="performer-name">{team.teamName}</div>
+                            <div className="performer-stats">
+                              {team.periodOrders} orders • {formatCurrency(team.periodAvgOrderValue)} avg
+                            </div>
+                          </div>
+                          <div className="performer-value">{formatCurrency(team.periodSales)}</div>
                         </div>
-                        <div className="performer-value">{formatCurrency(team.periodSales)}</div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <div className="empty-state-small">No sales in this period</div>
                   )}
@@ -598,10 +612,17 @@ export default function Admin() {
                   <tbody>
                     {teamPerformance.length > 0 ? (
                       teamPerformance.map((team) => {
+                        // Check if team has any all-time sales or orders
+                        const hasAllTimeSales = (team.totalSalesAllTime > 0) || (team.totalOrdersAllTime > 0);
+
                         return (
                           <tr key={team.teamName} className={!team.hasPeriodSales ? 'no-period-sales' : ''}>
                             <td>
-                              <div className="rank-badge">#{team.rank}</div>
+                              {hasAllTimeSales ? (
+                                <div className="rank-badge">#{team.rank}</div>
+                              ) : (
+                                <div className="rank-badge" style={{ opacity: 0.5 }}>-</div>
+                              )}
                             </td>
                             <td>
                               <div className="team-name-cell">{team.teamName}</div>

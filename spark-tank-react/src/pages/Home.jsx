@@ -28,9 +28,19 @@ export default function Home() {
   const avgOrderValue = totalOrders > 0 ? Math.round(totalSales / totalOrders) : 0;
 
   // Convert leaderboard object to sorted array
-  const leaderboard = leaderboardData
-    ? Object.values(leaderboardData).sort((a, b) => b.totalSales - a.totalSales)
-    : [];
+  // Separate teams with sales vs no sales
+  const allTeams = leaderboardData ? Object.values(leaderboardData) : [];
+
+  const teamsWithSales = allTeams.filter(
+    team => (team.totalSales > 0) || (team.orderCount > 0)
+  ).sort((a, b) => b.totalSales - a.totalSales);
+
+  const teamsWithoutSales = allTeams.filter(
+    team => (!team.totalSales || team.totalSales === 0) && (!team.orderCount || team.orderCount === 0)
+  );
+
+  // Combine: ranked teams first, then unranked teams
+  const leaderboard = [...teamsWithSales, ...teamsWithoutSales];
 
   // Convert transactions to array
   const transactions = transactionsData
@@ -197,71 +207,86 @@ export default function Home() {
               </div>
             ) : (
               <div className="leaderboard">
-                {leaderboard.map((team, index) => (
-                  <div
-                    key={team.teamName || index}
-                    className="leaderboard-card"
-                    data-rank={index + 1}
-                  >
-                    <div className="card-content">
-                      <div className="card-left">
-                        <div className="rank-badge">
-                          {getRankIcon(index + 1)}
-                          <span className="rank-number">#{index + 1}</span>
-                        </div>
+                {leaderboard.map((team, index) => {
+                  // Check if team has sales or orders
+                  const hasSales = (team.totalSales > 0) || (team.orderCount > 0);
+                  // Calculate rank only for teams with sales
+                  const teamRank = hasSales ? teamsWithSales.findIndex(t => t.teamName === team.teamName) + 1 : null;
 
-                        <div className="team-info">
-                          <div className="team-name">{team.teamName || 'Unknown Team'}</div>
-                          <div className="team-members">
-                            {team.members ? team.members.join(' • ') : 'No members listed'}
+                  return (
+                    <div
+                      key={team.teamName || index}
+                      className="leaderboard-card"
+                      data-rank={teamRank || 'unranked'}
+                    >
+                      <div className="card-content">
+                        <div className="card-left">
+                          <div className="rank-badge">
+                            {hasSales ? (
+                              <>
+                                {getRankIcon(teamRank)}
+                                <span className="rank-number">#{teamRank}</span>
+                              </>
+                            ) : (
+                              <>
+                                <span style={{ fontSize: '1.5rem' }}>➖</span>
+                                <span className="rank-number">Not Ranked</span>
+                              </>
+                            )}
+                          </div>
+
+                          <div className="team-info">
+                            <div className="team-name">{team.teamName || 'Unknown Team'}</div>
+                            <div className="team-members">
+                              {team.members ? team.members.join(' • ') : 'No members listed'}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
+                        {(!team.totalSales || team.totalSales === 0) && (!team.orderCount || team.orderCount === 0) ? (
+                          <div className="hustle-message">
+                            {getHustleMessage()}
+                          </div>
+                        ) : (
+                          <div className="card-stats-row">
+                            <div className="stat-box">
+                              <div className="stat-icon-label">
+                                <span className="stat-icon">💰</span>
+                                <span className="stat-label">TOTAL SALES</span>
+                              </div>
+                              <div className="stat-value">{formatCurrency(team.totalSales || 0)}</div>
+                            </div>
+
+                            <div className="stat-box">
+                              <div className="stat-icon-label">
+                                <span className="stat-icon">📦</span>
+                                <span className="stat-label">ORDERS</span>
+                              </div>
+                              <div className="stat-value">{team.orderCount || 0}</div>
+                            </div>
+
+                            <div className="stat-box">
+                              <div className="stat-icon-label">
+                                <span className="stat-icon">₹</span>
+                                <span className="stat-label">AVG ORDER</span>
+                              </div>
+                              <div className="stat-value">
+                                {team.orderCount > 0
+                                  ? formatCurrency(team.totalSales / team.orderCount)
+                                  : formatCurrency(0)}
+                              </div>
+                            </div>
+
+                            <div className="status-badge">
+                              <span className="status-dot"></span>
+                              <span className="status-text">Stable</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-
-                    {(!team.totalSales || team.totalSales === 0) && (!team.orderCount || team.orderCount === 0) ? (
-                      <div className="hustle-message">
-                        {getHustleMessage()}
-                      </div>
-                    ) : (
-                      <div className="card-stats-row">
-                        <div className="stat-box">
-                          <div className="stat-icon-label">
-                            <span className="stat-icon">💰</span>
-                            <span className="stat-label">TOTAL SALES</span>
-                          </div>
-                          <div className="stat-value">{formatCurrency(team.totalSales || 0)}</div>
-                        </div>
-
-                        <div className="stat-box">
-                          <div className="stat-icon-label">
-                            <span className="stat-icon">📦</span>
-                            <span className="stat-label">ORDERS</span>
-                          </div>
-                          <div className="stat-value">{team.orderCount || 0}</div>
-                        </div>
-
-                        <div className="stat-box">
-                          <div className="stat-icon-label">
-                            <span className="stat-icon">₹</span>
-                            <span className="stat-label">AVG ORDER</span>
-                          </div>
-                          <div className="stat-value">
-                            {team.orderCount > 0
-                              ? formatCurrency(team.totalSales / team.orderCount)
-                              : formatCurrency(0)}
-                          </div>
-                        </div>
-
-                        <div className="status-badge">
-                          <span className="status-dot"></span>
-                          <span className="status-text">Stable</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>

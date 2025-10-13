@@ -329,24 +329,33 @@ export default function GroupView() {
                       </thead>
                       <tbody>
                         {sortedLeaderboard.length > 0 ? (
-                          sortedLeaderboard.map((team, index) => (
-                            <tr key={index}>
-                              <td>
-                                <strong>#{team.rank || index + 1}</strong>
-                              </td>
-                              <td>
-                                <span className={`team-name ${getTeamColorClass(team.teamName)}`}>
-                                  {team.teamName || team['Team Name'] || 'N/A'}
-                                </span>
-                              </td>
-                              <td>{team.members || team.Members || '-'}</td>
-                              <td>
-                                <strong>{formatCurrency(team.totalSales || 0)}</strong>
-                              </td>
-                              <td>{team.transactionCount || team['Transaction Count'] || 0}</td>
-                              <td>{getTrendIcon(team.trend)}</td>
-                            </tr>
-                          ))
+                          sortedLeaderboard.map((team, index) => {
+                            // Check if team has sales or orders
+                            const hasSales = (team.totalSales > 0) || (team.transactionCount > 0);
+
+                            return (
+                              <tr key={index}>
+                                <td>
+                                  {hasSales ? (
+                                    <strong>#{team.rank || index + 1}</strong>
+                                  ) : (
+                                    <span style={{ opacity: 0.5 }}>-</span>
+                                  )}
+                                </td>
+                                <td>
+                                  <span className={`team-name ${getTeamColorClass(team.teamName)}`}>
+                                    {team.teamName || team['Team Name'] || 'N/A'}
+                                  </span>
+                                </td>
+                                <td>{team.members || team.Members || '-'}</td>
+                                <td>
+                                  <strong>{formatCurrency(team.totalSales || 0)}</strong>
+                                </td>
+                                <td>{team.transactionCount || team['Transaction Count'] || 0}</td>
+                                <td>{getTrendIcon(team.trend)}</td>
+                              </tr>
+                            );
+                          })
                         ) : (
                           <tr>
                             <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
