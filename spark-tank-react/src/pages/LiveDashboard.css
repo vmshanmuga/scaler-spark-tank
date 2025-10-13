@@ -2,7 +2,7 @@
 
 :root[data-live-theme="dark"] {
   --live-bg-primary: #000000;
-  --live-bg-secondary: rgba(20, 20, 20, 0.8);
+  --live-bg-secondary: rgba(20, 20, 20, 0.5);
   --live-bg-tertiary: rgba(20, 20, 20, 0.9);
   --live-text-primary: #ffffff;
   --live-text-secondary: rgba(255, 255, 255, 0.7);
@@ -21,7 +21,7 @@
 
 :root[data-live-theme="light"] {
   --live-bg-primary: #f8f9fa;
-  --live-bg-secondary: rgba(255, 255, 255, 0.95);
+  --live-bg-secondary: rgba(255, 255, 255, 0.6);
   --live-bg-tertiary: rgba(255, 255, 255, 0.98);
   --live-text-primary: #1a1a1a;
   --live-text-secondary: rgba(0, 0, 0, 0.7);
@@ -459,7 +459,7 @@
   align-items: center;
   gap: 24px;
   background: var(--live-bg-secondary);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--live-border-primary);
   border-radius: 16px;
   padding: 24px;
@@ -756,7 +756,7 @@
 .total-revenue-card {
   position: relative;
   background: var(--live-bg-secondary);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--live-border-primary);
   border-radius: 16px;
   padding: 40px 32px;
@@ -862,7 +862,7 @@
   align-items: center;
   gap: 16px;
   background: var(--live-bg-secondary);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--live-border-primary);
   border-radius: 12px;
   padding: 16px 24px;

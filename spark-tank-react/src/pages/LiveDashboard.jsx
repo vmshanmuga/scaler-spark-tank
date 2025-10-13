@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useLeaderboardData, useTransactionsData, useMetadata, useLastSync } from '../hooks/useFirebaseData';
 import DropshippingLoader from '../components/DropshippingLoader';
+import LiveDropshippingBg from '../components/LiveDropshippingBg';
 import './LiveDashboard.css';
 
 // Confetti Component
@@ -333,6 +334,9 @@ export default function LiveDashboard() {
           />
         )
       )}
+
+      {/* Animated Dropshipping Background */}
+      <LiveDropshippingBg theme={theme} />
 
       {/* Animated Background */}
       <div className="live-dashboard-bg">
