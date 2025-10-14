@@ -300,8 +300,36 @@ export default function Admin() {
   }, [teamPerformance]);
 
   const bottomPerformers = useMemo(() => {
-    const teamsWithSales = teamPerformance.filter(t => t.hasPeriodSales);
-    return [...teamsWithSales].sort((a, b) => a.periodSales - b.periodSales).slice(0, 3);
+    // Teams needing attention:
+    // 1. Teams ranked 7 and below (if they have sales)
+    // 2. ALL teams with 0 sales in the period
+    const needsAttention = teamPerformance.filter(team => {
+      // Teams with 0 sales always need attention
+      if (!team.hasPeriodSales) {
+        return true;
+      }
+
+      // Teams ranked 7 or lower need attention
+      if (team.rank >= 7) {
+        return true;
+      }
+
+      return false;
+    });
+
+    // Sort: teams with sales first (by rank), then teams without sales
+    return needsAttention.sort((a, b) => {
+      // Both have no sales - sort by all-time sales (descending)
+      if (!a.hasPeriodSales && !b.hasPeriodSales) {
+        return b.totalSalesAllTime - a.totalSalesAllTime;
+      }
+      // a has no sales, b has sales - a goes last
+      if (!a.hasPeriodSales) return 1;
+      // b has no sales, a has sales - b goes last
+      if (!b.hasPeriodSales) return -1;
+      // Both have sales - sort by rank (ascending)
+      return a.rank - b.rank;
+    });
   }, [teamPerformance]);
 
   // Format currency
@@ -556,7 +584,7 @@ export default function Admin() {
               <div className="analysis-card">
                 <div className="card-header-section">
                   <h2 className="card-title">⚠️ Needs Attention</h2>
-                  <span className="card-subtitle">Teams needing support</span>
+                  <span className="card-subtitle">Teams ranked 7+ or with no sales</span>
                 </div>
                 <div className="performers-list">
                   {bottomPerformers.length > 0 ? (

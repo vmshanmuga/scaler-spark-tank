@@ -224,7 +224,6 @@ export default function LiveDashboard() {
 
       // Check if this is a new transaction we haven't seen
       if (lastSeenPaymentId && latestTxn.paymentId !== lastSeenPaymentId) {
-        console.log('🎉 New transaction detected:', latestTxn);
         setCelebrationQueue(prev => [...prev, latestTxn]);
       }
 

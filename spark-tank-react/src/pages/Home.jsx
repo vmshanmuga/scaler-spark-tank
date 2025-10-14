@@ -32,11 +32,13 @@ export default function Home() {
   const allTeams = leaderboardData ? Object.values(leaderboardData) : [];
 
   const teamsWithSales = allTeams.filter(
-    team => (team.totalSales > 0) || (team.orderCount > 0)
+    team => (team.totalSales > 0) || (team.orderCount > 0) || (team.transactionCount > 0)
   ).sort((a, b) => b.totalSales - a.totalSales);
 
   const teamsWithoutSales = allTeams.filter(
-    team => (!team.totalSales || team.totalSales === 0) && (!team.orderCount || team.orderCount === 0)
+    team => (!team.totalSales || team.totalSales === 0) &&
+            (!team.orderCount || team.orderCount === 0) &&
+            (!team.transactionCount || team.transactionCount === 0)
   );
 
   // Combine: ranked teams first, then unranked teams
@@ -209,7 +211,7 @@ export default function Home() {
               <div className="leaderboard">
                 {leaderboard.map((team, index) => {
                   // Check if team has sales or orders
-                  const hasSales = (team.totalSales > 0) || (team.orderCount > 0);
+                  const hasSales = (team.totalSales > 0) || (team.orderCount > 0) || (team.transactionCount > 0);
                   // Calculate rank only for teams with sales
                   const teamRank = hasSales ? teamsWithSales.findIndex(t => t.teamName === team.teamName) + 1 : null;
 
@@ -243,7 +245,9 @@ export default function Home() {
                           </div>
                         </div>
 
-                        {(!team.totalSales || team.totalSales === 0) && (!team.orderCount || team.orderCount === 0) ? (
+                        {(!team.totalSales || team.totalSales === 0) &&
+                         (!team.orderCount || team.orderCount === 0) &&
+                         (!team.transactionCount || team.transactionCount === 0) ? (
                           <div className="hustle-message">
                             {getHustleMessage()}
                           </div>
@@ -262,7 +266,7 @@ export default function Home() {
                                 <span className="stat-icon">📦</span>
                                 <span className="stat-label">ORDERS</span>
                               </div>
-                              <div className="stat-value">{team.orderCount || 0}</div>
+                              <div className="stat-value">{team.orderCount || team.transactionCount || 0}</div>
                             </div>
 
                             <div className="stat-box">
@@ -271,9 +275,12 @@ export default function Home() {
                                 <span className="stat-label">AVG ORDER</span>
                               </div>
                               <div className="stat-value">
-                                {team.orderCount > 0
-                                  ? formatCurrency(team.totalSales / team.orderCount)
-                                  : formatCurrency(0)}
+                                {(() => {
+                                  const orders = team.orderCount || team.transactionCount || 0;
+                                  return orders > 0
+                                    ? formatCurrency(team.totalSales / orders)
+                                    : formatCurrency(0);
+                                })()}
                               </div>
                             </div>
 
