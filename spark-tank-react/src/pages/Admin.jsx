@@ -155,16 +155,24 @@ export default function Admin() {
 
   // Calculate metrics using SAME LOGIC as Home/GroupView (matches backend calculation)
   const metrics = useMemo(() => {
-    // All calculations now use filteredTransactions which already applies backend logic:
-    // - Only counts order.paid and payment_link.paid events
-    // - Only counts transactions with status = 'paid'
-    // - For "All Time", filteredTransactions = all paid orders
-    // - For other filters, filteredTransactions = paid orders in date range
+    let totalSales, totalOrders, activeTeams, avgOrderValue;
 
-    const totalSales = filteredTransactions.reduce((sum, txn) => sum + (txn.amount || 0), 0);
-    const totalOrders = filteredTransactions.length;
-    const activeTeams = new Set(filteredTransactions.map(txn => txn.teamName)).size;
-    const avgOrderValue = totalOrders > 0 ? Math.round(totalSales / totalOrders) : 0;
+    // For "All Time" filter, use leaderboard data (source of truth)
+    if (timeFilter === 'all') {
+      totalSales = leaderboard.reduce((sum, team) => sum + (team.totalSales || 0), 0);
+      totalOrders = leaderboard.reduce((sum, team) => {
+        const orders = team.transactionCount || team.orderCount || 0;
+        return sum + orders;
+      }, 0);
+      activeTeams = leaderboard.filter(team => (team.totalSales || 0) > 0).length;
+      avgOrderValue = totalOrders > 0 ? Math.round(totalSales / totalOrders) : 0;
+    } else {
+      // For other filters (Today/Week/Month/Custom), use filtered transactions
+      totalSales = filteredTransactions.reduce((sum, txn) => sum + (txn.amount || 0), 0);
+      totalOrders = filteredTransactions.length;
+      activeTeams = new Set(filteredTransactions.map(txn => txn.teamName)).size;
+      avgOrderValue = totalOrders > 0 ? Math.round(totalSales / totalOrders) : 0;
+    }
 
     // Growth calculation (compare to previous period) - also using paid orders only
     const now = new Date();
@@ -222,14 +230,15 @@ export default function Admin() {
 
     console.log(`Growth calculation - Filter: ${timeFilter}, Current: ${totalSales}, Previous: ${previousSales}, Growth: ${growthPercentage.toFixed(1)}%`);
 
-    // Return metrics (all filters now use same calculation logic)
-    console.log(`📊 Metrics (${timeFilter} - using PAID ORDERS only):`, {
+    // Return metrics
+    const dataSource = timeFilter === 'all' ? 'LEADERBOARD' : 'FILTERED TRANSACTIONS';
+    console.log(`📊 Metrics (${timeFilter} - using ${dataSource}):`, {
       totalSales,
       totalOrders,
       activeTeams,
       avgOrderValue,
       growthPercentage: `${growthPercentage.toFixed(1)}%`,
-      paidOrdersCount: filteredTransactions.length
+      dataSource
     });
 
     return {
@@ -239,7 +248,7 @@ export default function Admin() {
       avgOrderValue,
       growthPercentage
     };
-  }, [filteredTransactions, transactions, timeFilter]);
+  }, [filteredTransactions, transactions, timeFilter, leaderboard]);
 
   // Team performance analysis - REDESIGNED to show ALL teams with static + filtered columns
   const teamPerformance = useMemo(() => {
