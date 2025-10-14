@@ -5,6 +5,7 @@ public/**
 firebase.json
 .firebaserc
 database.rules.json
+.firebase/**
 
 # Ignore documentation
 *.md
@@ -23,6 +24,7 @@ node_modules/**
 
 # Ignore entire React project folder
 spark-tank-react/**
+spark-tank-react-backup/**
 
 # Ignore IDE files
 .vscode/**

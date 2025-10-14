@@ -134,6 +134,7 @@ export default function LiveDashboard() {
   const [lastUpdated, setLastUpdated] = useState('--');
   const [animatedTotalSales, setAnimatedTotalSales] = useState(0);
   const [theme, setTheme] = useState('dark');
+  const [showTransactionsModal, setShowTransactionsModal] = useState(false);
   const celebrationTimeoutRef = useRef(null);
 
   // Initialize theme from localStorage
@@ -432,10 +433,13 @@ export default function LiveDashboard() {
 
         {/* Live Transactions Feed */}
         {recentTransactions.length > 0 && (
-          <div className="transaction-feed-section">
-            <h2 className="feed-title">💰 LIVE TRANSACTIONS</h2>
+          <div className="transaction-feed-section" onClick={() => setShowTransactionsModal(true)} style={{ cursor: 'pointer' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+              <h2 className="feed-title">💰 LIVE TRANSACTIONS</h2>
+              <span style={{ fontSize: '0.875rem', opacity: 0.7 }}>Click to view all →</span>
+            </div>
             <div className="transaction-feed">
-              {recentTransactions.map((txn, index) => (
+              {recentTransactions.slice(0, 5).map((txn, index) => (
                 <div key={txn.paymentId || index} className="transaction-item">
                   <div className="transaction-icon">🎉</div>
                   <div className="transaction-team">{txn.teamName}</div>
@@ -444,6 +448,11 @@ export default function LiveDashboard() {
                 </div>
               ))}
             </div>
+            {recentTransactions.length > 5 && (
+              <div style={{ textAlign: 'center', marginTop: '1rem', opacity: 0.7, fontSize: '0.875rem' }}>
+                + {recentTransactions.length - 5} more transactions
+              </div>
+            )}
           </div>
         )}
 
@@ -506,6 +515,39 @@ export default function LiveDashboard() {
           </div>
         )}
       </div>
+
+      {/* Transactions Modal */}
+      {showTransactionsModal && (
+        <div className="live-modal-overlay" onClick={() => setShowTransactionsModal(false)}>
+          <div className="live-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="live-modal-header">
+              <h2>💰 All Live Transactions</h2>
+              <button className="live-modal-close" onClick={() => setShowTransactionsModal(false)}>×</button>
+            </div>
+            <div className="live-modal-body">
+              <div className="live-modal-stats">
+                <span>Total: <strong>{paidTransactions.length}</strong> transactions</span>
+                <span>•</span>
+                <span>Total Value: <strong>{formatCurrency(paidTransactions.reduce((sum, t) => sum + (t.amount || 0), 0))}</strong></span>
+              </div>
+              <div className="live-modal-transactions">
+                {paidTransactions.map((txn, index) => (
+                  <div key={txn.paymentId || index} className="live-modal-transaction">
+                    <div className="live-modal-transaction-left">
+                      <div className="live-modal-transaction-icon">🎉</div>
+                      <div className="live-modal-transaction-info">
+                        <div className="live-modal-transaction-team">{txn.teamName}</div>
+                        <div className="live-modal-transaction-time">{getTimeAgo(txn.timestamp)}</div>
+                      </div>
+                    </div>
+                    <div className="live-modal-transaction-amount">{formatCurrency(txn.amount)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Transaction Ticker at Bottom */}
       {paidTransactions.length > 0 && (

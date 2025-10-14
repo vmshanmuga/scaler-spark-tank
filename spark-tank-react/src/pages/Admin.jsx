@@ -19,6 +19,7 @@ export default function Admin() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [modalOpen, setModalOpen] = useState(null); // 'sales' | 'orders' | 'teams' | 'avg' | null
 
   // Update last sync time
   useEffect(() => {
@@ -101,7 +102,22 @@ export default function Admin() {
              status === 'paid';
     });
 
-    console.log(`Filtered ${paidOrderTransactions.length} paid orders out of ${transactions.length} total transactions`);
+    console.log(`📋 Transaction Filtering:`, {
+      total: transactions.length,
+      paidOrders: paidOrderTransactions.length,
+      filtered: paidOrderTransactions.length - transactions.length
+    });
+
+    // Log sample transactions to debug
+    if (paidOrderTransactions.length > 0) {
+      console.log(`Sample transaction timestamps:`,
+        paidOrderTransactions.slice(0, 3).map(t => ({
+          orderId: t.orderId || t.order_id,
+          timestamp: t.timestamp || t.Timestamp,
+          amount: t.amount
+        }))
+      );
+    }
 
     if (timeFilter === 'all') return paidOrderTransactions;
 
@@ -113,6 +129,11 @@ export default function Admin() {
       const txnDate = parseRazorpayDate(timestampValue);
 
       if (!txnDate || isNaN(txnDate.getTime())) {
+        console.warn('⚠️ Transaction filtered out - invalid date:', {
+          orderId: txn.orderId || txn.order_id,
+          timestamp: timestampValue,
+          parsedDate: txnDate
+        });
         return false;
       }
 
@@ -149,7 +170,17 @@ export default function Admin() {
       return true;
     });
 
-    console.log(`Filtered ${filtered.length} paid orders for timeFilter: ${timeFilter}`);
+    console.log(`📅 Date Filtering Result:`, {
+      timeFilter,
+      paidOrders: paidOrderTransactions.length,
+      afterDateFilter: filtered.length,
+      droppedByDateFilter: paidOrderTransactions.length - filtered.length
+    });
+
+    if (filtered.length < paidOrderTransactions.length) {
+      console.warn(`⚠️ ${paidOrderTransactions.length - filtered.length} transactions were filtered out by date range`);
+    }
+
     return filtered;
   }, [transactions, timeFilter, startDate, endDate]);
 
@@ -512,7 +543,7 @@ export default function Admin() {
             {/* Overview Metrics */}
             <div className="metrics-grid">
               {/* Total Sales = Sum of all team's totalSales from leaderboard */}
-              <div className="metric-card">
+              <div className="metric-card" onClick={() => setModalOpen('sales')} style={{ cursor: 'pointer' }}>
                 <div className="metric-header">
                   <span className="metric-icon">💰</span>
                   <span className="metric-label">Total Sales</span>
@@ -525,7 +556,7 @@ export default function Admin() {
               </div>
 
               {/* Total Orders = Count of paid orders (order.paid + payment_link.paid) */}
-              <div className="metric-card">
+              <div className="metric-card" onClick={() => setModalOpen('orders')} style={{ cursor: 'pointer' }}>
                 <div className="metric-header">
                   <span className="metric-icon">📦</span>
                   <span className="metric-label">Total Orders</span>
@@ -537,7 +568,7 @@ export default function Admin() {
               </div>
 
               {/* Active Teams = Count of teams with sales in period */}
-              <div className="metric-card">
+              <div className="metric-card" onClick={() => setModalOpen('teams')} style={{ cursor: 'pointer' }}>
                 <div className="metric-header">
                   <span className="metric-icon">👥</span>
                   <span className="metric-label">Active Teams</span>
@@ -549,7 +580,7 @@ export default function Admin() {
               </div>
 
               {/* Avg Order Value = Total Sales / Total Orders */}
-              <div className="metric-card">
+              <div className="metric-card" onClick={() => setModalOpen('avg')} style={{ cursor: 'pointer' }}>
                 <div className="metric-header">
                   <span className="metric-icon">📈</span>
                   <span className="metric-label">Avg Order Value</span>
@@ -560,6 +591,221 @@ export default function Admin() {
                 </div>
               </div>
             </div>
+
+            {/* Modal for detailed view */}
+            {modalOpen && (
+              <div className="modal-overlay" onClick={() => setModalOpen(null)}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <button className="modal-close" onClick={() => setModalOpen(null)}>×</button>
+
+                  {modalOpen === 'sales' && (
+                    <>
+                      <h2>💰 Total Sales Breakdown</h2>
+                      <p style={{ marginBottom: '16px', opacity: 0.7 }}>
+                        Filter: <strong>{timeFilter === 'all' ? 'All Time' : timeFilter === 'today' ? 'Today' : timeFilter === 'week' ? 'Last 7 Days' : timeFilter === 'month' ? 'Last 30 Days' : 'Custom'}</strong>
+                        {timeFilter === 'all' ? ' (using leaderboard data)' : ' (using transaction data)'}
+                      </p>
+
+                      {timeFilter === 'all' ? (
+                        <div className="modal-table-container">
+                          <table className="modal-table">
+                            <thead>
+                              <tr>
+                                <th>Rank</th>
+                                <th>Team Name</th>
+                                <th>Total Sales</th>
+                                <th>Orders</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {leaderboard.filter(t => t.totalSales > 0).map(team => (
+                                <tr key={team.teamName}>
+                                  <td>#{team.rank}</td>
+                                  <td>{team.teamName}</td>
+                                  <td>{formatCurrency(team.totalSales)}</td>
+                                  <td>{team.transactionCount || team.orderCount || 0}</td>
+                                </tr>
+                              ))}
+                              <tr style={{ fontWeight: 'bold', borderTop: '2px solid var(--border-color)' }}>
+                                <td colSpan="2">TOTAL</td>
+                                <td>{formatCurrency(metrics.totalSales)}</td>
+                                <td>{metrics.totalOrders}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="modal-table-container">
+                          <table className="modal-table">
+                            <thead>
+                              <tr>
+                                <th>Timestamp</th>
+                                <th>Team Name</th>
+                                <th>Order ID</th>
+                                <th>Amount</th>
+                                <th>Event Type</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filteredTransactions.map((txn, idx) => (
+                                <tr key={idx}>
+                                  <td>{new Date(txn.timestamp || txn.Timestamp).toLocaleString()}</td>
+                                  <td>{txn.teamName || 'Unknown'}</td>
+                                  <td style={{ fontSize: '0.8em' }}>{txn.orderId || txn.order_id || 'N/A'}</td>
+                                  <td>{formatCurrency(txn.amount)}</td>
+                                  <td>{txn.eventType || txn['Event Type']}</td>
+                                  <td>{txn.status || txn.Status}</td>
+                                </tr>
+                              ))}
+                              <tr style={{ fontWeight: 'bold', borderTop: '2px solid var(--border-color)' }}>
+                                <td colSpan="3">TOTAL</td>
+                                <td>{formatCurrency(metrics.totalSales)}</td>
+                                <td colSpan="2">{filteredTransactions.length} transactions</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {modalOpen === 'orders' && (
+                    <>
+                      <h2>📦 Total Orders Breakdown</h2>
+                      <p style={{ marginBottom: '16px', opacity: 0.7 }}>
+                        Filter: <strong>{timeFilter === 'all' ? 'All Time' : timeFilter === 'today' ? 'Today' : timeFilter === 'week' ? 'Last 7 Days' : timeFilter === 'month' ? 'Last 30 Days' : 'Custom'}</strong> •
+                        Showing only <code>order.paid</code> and <code>payment_link.paid</code> events with <code>status='paid'</code>
+                      </p>
+
+                      <div className="modal-table-container">
+                        <table className="modal-table">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Timestamp</th>
+                              <th>Team Name</th>
+                              <th>Order ID</th>
+                              <th>Amount</th>
+                              <th>Event Type</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredTransactions.map((txn, idx) => (
+                              <tr key={idx}>
+                                <td>{idx + 1}</td>
+                                <td>{new Date(txn.timestamp || txn.Timestamp).toLocaleString()}</td>
+                                <td>{txn.teamName || 'Unknown'}</td>
+                                <td style={{ fontSize: '0.8em' }}>{txn.orderId || txn.order_id || 'N/A'}</td>
+                                <td>{formatCurrency(txn.amount)}</td>
+                                <td>{txn.eventType || txn['Event Type']}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <p style={{ marginTop: '16px', padding: '12px', background: 'var(--bg-tertiary)', borderRadius: '8px' }}>
+                        <strong>Total Orders:</strong> {metrics.totalOrders} •
+                        <strong>Total Sales:</strong> {formatCurrency(metrics.totalSales)}
+                      </p>
+                    </>
+                  )}
+
+                  {modalOpen === 'teams' && (
+                    <>
+                      <h2>👥 Active Teams Breakdown</h2>
+                      <p style={{ marginBottom: '16px', opacity: 0.7 }}>
+                        Filter: <strong>{timeFilter === 'all' ? 'All Time' : timeFilter === 'today' ? 'Today' : timeFilter === 'week' ? 'Last 7 Days' : timeFilter === 'month' ? 'Last 30 Days' : 'Custom'}</strong>
+                      </p>
+
+                      <div className="modal-table-container">
+                        <table className="modal-table">
+                          <thead>
+                            <tr>
+                              <th>Rank</th>
+                              <th>Team Name</th>
+                              <th>Sales ({timeFilter === 'all' ? 'All Time' : 'Period'})</th>
+                              <th>Orders ({timeFilter === 'all' ? 'All Time' : 'Period'})</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {timeFilter === 'all' ? (
+                              leaderboard.filter(t => t.totalSales > 0).map(team => (
+                                <tr key={team.teamName}>
+                                  <td>#{team.rank}</td>
+                                  <td>{team.teamName}</td>
+                                  <td>{formatCurrency(team.totalSales)}</td>
+                                  <td>{team.transactionCount || team.orderCount || 0}</td>
+                                </tr>
+                              ))
+                            ) : (
+                              teamPerformance.filter(t => t.hasPeriodSales).map(team => (
+                                <tr key={team.teamName}>
+                                  <td>#{team.rank}</td>
+                                  <td>{team.teamName}</td>
+                                  <td>{formatCurrency(team.periodSales)}</td>
+                                  <td>{team.periodOrders}</td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                      <p style={{ marginTop: '16px', padding: '12px', background: 'var(--bg-tertiary)', borderRadius: '8px' }}>
+                        <strong>Active Teams:</strong> {metrics.activeTeams} teams with sales
+                      </p>
+                    </>
+                  )}
+
+                  {modalOpen === 'avg' && (
+                    <>
+                      <h2>📈 Average Order Value Breakdown</h2>
+                      <p style={{ marginBottom: '16px', opacity: 0.7 }}>
+                        Filter: <strong>{timeFilter === 'all' ? 'All Time' : timeFilter === 'today' ? 'Today' : timeFilter === 'week' ? 'Last 7 Days' : timeFilter === 'month' ? 'Last 30 Days' : 'Custom'}</strong>
+                      </p>
+
+                      <div style={{ padding: '24px', background: 'var(--bg-tertiary)', borderRadius: '12px', marginBottom: '24px' }}>
+                        <h3 style={{ margin: '0 0 16px 0' }}>Calculation</h3>
+                        <div style={{ fontSize: '1.5em', textAlign: 'center', margin: '24px 0' }}>
+                          <div style={{ marginBottom: '12px' }}>
+                            {formatCurrency(metrics.totalSales)} <span style={{ opacity: 0.5 }}>÷</span> {metrics.totalOrders}
+                          </div>
+                          <div style={{ borderTop: '2px solid var(--border-color)', paddingTop: '12px', marginTop: '12px', fontSize: '1.2em', fontWeight: 'bold', color: 'var(--primary-color)' }}>
+                            = {formatCurrency(metrics.avgOrderValue)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <h3>Order Distribution</h3>
+                      <div className="modal-table-container">
+                        <table className="modal-table">
+                          <thead>
+                            <tr>
+                              <th>Order #</th>
+                              <th>Timestamp</th>
+                              <th>Team</th>
+                              <th>Amount</th>
+                              <th>% of Total</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredTransactions.map((txn, idx) => (
+                              <tr key={idx}>
+                                <td>{idx + 1}</td>
+                                <td>{new Date(txn.timestamp || txn.Timestamp).toLocaleString()}</td>
+                                <td>{txn.teamName || 'Unknown'}</td>
+                                <td>{formatCurrency(txn.amount)}</td>
+                                <td>{((txn.amount / metrics.totalSales) * 100).toFixed(1)}%</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Performance Analysis */}
             <div className="analysis-grid">

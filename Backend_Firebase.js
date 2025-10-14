@@ -105,8 +105,8 @@ function syncToFirebase() {
     // Calculate leaderboard
     const leaderboard = calculateLeaderboard(masterData, paymentsData);
 
-    // Get recent transactions
-    const recentTransactions = getRecentTransactions(paymentsData, masterData, 20);
+    // Get all transactions (no limit)
+    const recentTransactions = getRecentTransactions(paymentsData, masterData);
 
     // Calculate metadata
     const metadata = calculateMetadata(leaderboard);
@@ -317,9 +317,9 @@ function calculateLeaderboard(masterData, paymentsData) {
 }
 
 /**
- * Get recent transactions
+ * Get all transactions (no limit)
  */
-function getRecentTransactions(paymentsData, masterData, limit = 50) {
+function getRecentTransactions(paymentsData, masterData) {
   // Show ALL payment events (not just paid ones)
   const allPayments = paymentsData.filter(payment => {
     return payment['Event Type'] && payment['Timestamp']; // Only need valid event type and timestamp
@@ -328,11 +328,8 @@ function getRecentTransactions(paymentsData, masterData, limit = 50) {
   // Sort by timestamp (newest first)
   allPayments.sort((a, b) => new Date(b['Timestamp']) - new Date(a['Timestamp']));
 
-  // Take only recent ones
-  const recentPayments = allPayments.slice(0, limit);
-
-  // Map to transaction objects with team names
-  return recentPayments.map(payment => {
+  // Map to transaction objects with team names (no limit - sync all)
+  return allPayments.map(payment => {
     const accountEmail = payment['Razorpay Account Email'];
     const accountId = payment['Razorpay Account ID'];
 
