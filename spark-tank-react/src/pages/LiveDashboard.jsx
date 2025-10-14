@@ -171,16 +171,23 @@ export default function LiveDashboard() {
     }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   }, [transactionsData]);
 
-  // Calculate total sales from paid transactions
-  const totalSales = useMemo(() => {
-    return paidTransactions.reduce((sum, txn) => sum + (txn.amount || 0), 0);
-  }, [paidTransactions]);
-
-  // Calculate stats
+  // Calculate stats from leaderboard data (source of truth)
   const stats = useMemo(() => {
-    const leaderboard = Array.isArray(leaderboardData) ? leaderboardData : [];
-    const totalOrders = paidTransactions.length;
-    const activeTeams = new Set(paidTransactions.map(t => t.teamName)).size;
+    const teams = Array.isArray(leaderboardData) ? leaderboardData : [];
+
+    // Calculate total sales from leaderboard (sum of all team sales)
+    const totalSales = teams.reduce((sum, team) => sum + (team.totalSales || 0), 0);
+
+    // Calculate total orders from leaderboard
+    const totalOrders = teams.reduce((sum, team) => {
+      const orders = team.transactionCount || team.orderCount || 0;
+      return sum + orders;
+    }, 0);
+
+    // Count active teams (teams with sales > 0)
+    const activeTeams = teams.filter(team => (team.totalSales || 0) > 0).length;
+
+    // Calculate average order value
     const avgOrderValue = totalOrders > 0 ? Math.round(totalSales / totalOrders) : 0;
 
     return {
@@ -189,7 +196,7 @@ export default function LiveDashboard() {
       activeTeams,
       avgOrderValue
     };
-  }, [leaderboardData, paidTransactions, totalSales]);
+  }, [leaderboardData]);
 
   // Animate total sales counter
   useEffect(() => {
