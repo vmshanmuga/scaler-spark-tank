@@ -302,11 +302,18 @@ export default function Admin() {
     return allTeams.sort((a, b) => a.rank - b.rank);
   }, [leaderboard, filteredTransactions, timeFilter]);
 
-  // Top and bottom performers - based on period sales
+  // Top and bottom performers - based on period sales or all-time sales
   const topPerformers = useMemo(() => {
-    const teamsWithSales = teamPerformance.filter(t => t.hasPeriodSales);
-    return [...teamsWithSales].sort((a, b) => b.periodSales - a.periodSales).slice(0, 3);
-  }, [teamPerformance]);
+    if (timeFilter === 'all') {
+      // For "All Time", use all-time sales from leaderboard
+      const teamsWithSales = teamPerformance.filter(t => t.totalSalesAllTime > 0);
+      return [...teamsWithSales].sort((a, b) => b.totalSalesAllTime - a.totalSalesAllTime).slice(0, 3);
+    } else {
+      // For other filters, use period sales from filtered transactions
+      const teamsWithSales = teamPerformance.filter(t => t.hasPeriodSales);
+      return [...teamsWithSales].sort((a, b) => b.periodSales - a.periodSales).slice(0, 3);
+    }
+  }, [teamPerformance, timeFilter]);
 
   const bottomPerformers = useMemo(() => {
     // Teams needing attention:
@@ -568,6 +575,13 @@ export default function Admin() {
                       // Find actual rank from leaderboard
                       const hasAllTimeSales = (team.totalSalesAllTime > 0) || (team.totalOrdersAllTime > 0);
 
+                      // Use all-time data for "All Time" filter, period data for others
+                      const displayOrders = timeFilter === 'all' ? team.totalOrdersAllTime : team.periodOrders;
+                      const displayAvg = timeFilter === 'all' ?
+                        (team.totalOrdersAllTime > 0 ? Math.round(team.totalSalesAllTime / team.totalOrdersAllTime) : 0) :
+                        team.periodAvgOrderValue;
+                      const displaySales = timeFilter === 'all' ? team.totalSalesAllTime : team.periodSales;
+
                       return (
                         <div key={team.teamName} className="performer-item top-performer">
                           <div className="performer-rank">
@@ -576,10 +590,10 @@ export default function Admin() {
                           <div className="performer-info">
                             <div className="performer-name">{team.teamName}</div>
                             <div className="performer-stats">
-                              {team.periodOrders} orders • {formatCurrency(team.periodAvgOrderValue)} avg
+                              {displayOrders} orders • {formatCurrency(displayAvg)} avg
                             </div>
                           </div>
-                          <div className="performer-value">{formatCurrency(team.periodSales)}</div>
+                          <div className="performer-value">{formatCurrency(displaySales)}</div>
                         </div>
                       );
                     })
@@ -601,6 +615,13 @@ export default function Admin() {
                       // Find actual rank from leaderboard
                       const hasAllTimeSales = (team.totalSalesAllTime > 0) || (team.totalOrdersAllTime > 0);
 
+                      // Use all-time data for "All Time" filter, period data for others
+                      const displayOrders = timeFilter === 'all' ? team.totalOrdersAllTime : team.periodOrders;
+                      const displayAvg = timeFilter === 'all' ?
+                        (team.totalOrdersAllTime > 0 ? Math.round(team.totalSalesAllTime / team.totalOrdersAllTime) : 0) :
+                        team.periodAvgOrderValue;
+                      const displaySales = timeFilter === 'all' ? team.totalSalesAllTime : team.periodSales;
+
                       return (
                         <div key={team.teamName} className="performer-item bottom-performer">
                           <div className="performer-rank">
@@ -609,10 +630,10 @@ export default function Admin() {
                           <div className="performer-info">
                             <div className="performer-name">{team.teamName}</div>
                             <div className="performer-stats">
-                              {team.periodOrders} orders • {formatCurrency(team.periodAvgOrderValue)} avg
+                              {displayOrders} orders • {formatCurrency(displayAvg)} avg
                             </div>
                           </div>
-                          <div className="performer-value">{formatCurrency(team.periodSales)}</div>
+                          <div className="performer-value">{formatCurrency(displaySales)}</div>
                         </div>
                       );
                     })
