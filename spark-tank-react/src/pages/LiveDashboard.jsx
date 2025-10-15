@@ -160,16 +160,50 @@ export default function LiveDashboard() {
       ? transactionsData
       : Object.values(transactionsData);
 
-    // ONLY count order.paid and payment_link.paid with status = 'paid'
-    return transactions.filter(txn => {
+    // Filter valid payment events (matching backend logic)
+    const validTransactions = transactions.filter(txn => {
       const eventType = txn.eventType || txn.event || txn['Event Type'] || '';
       const status = txn.status || txn.Status || '';
 
-      const validEventType = (eventType === 'order.paid' || eventType === 'payment_link.paid');
-      const validStatus = (status === 'paid');
+      if (eventType === 'order.paid' && status === 'paid') return true;
+      if (eventType === 'payment_link.paid' && status === 'paid') return true;
+      if (eventType === 'payment.captured' && status === 'captured') return true;
+      if (eventType === 'payment.authorized' && status === 'authorized') return true;
 
-      return validEventType && validStatus;
-    }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      return false;
+    });
+
+    // Deduplicate by Entity ID (same logic as backend)
+    const entityIdMap = new Map();
+    validTransactions.forEach(txn => {
+      const entityId = txn.paymentId || txn['Entity ID'];
+      if (!entityId) return;
+
+      const eventType = txn.eventType || txn.event || txn['Event Type'] || '';
+      const existing = entityIdMap.get(entityId);
+
+      if (!existing) {
+        entityIdMap.set(entityId, txn);
+        return;
+      }
+
+      const eventPriority = {
+        'payment.captured': 3,
+        'order.paid': 2,
+        'payment_link.paid': 2,
+        'payment.authorized': 1
+      };
+
+      const currentPriority = eventPriority[eventType] || 0;
+      const existingEventType = existing.eventType || existing.event || existing['Event Type'] || '';
+      const existingPriority = eventPriority[existingEventType] || 0;
+
+      if (currentPriority > existingPriority) {
+        entityIdMap.set(entityId, txn);
+      }
+    });
+
+    return Array.from(entityIdMap.values()).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   }, [transactionsData]);
 
   // Calculate stats from leaderboard data (source of truth)

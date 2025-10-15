@@ -92,15 +92,52 @@ export default function Admin() {
   // Filter transactions by time AND event type (matching backend logic)
   const filteredTransactions = useMemo(() => {
     // First, filter by event type to match backend logic
-    // Backend only counts: order.paid and payment_link.paid with status = 'paid'
-    const paidOrderTransactions = transactions.filter(txn => {
+    // Backend counts: order.paid, payment_link.paid, payment.captured, payment.authorized
+    const allValidTransactions = transactions.filter(txn => {
       const eventType = txn.eventType || txn.event || txn['Event Type'] || '';
       const status = txn.status || txn.Status || '';
 
-      // Match backend logic: only count order.paid and payment_link.paid with status = paid
-      return (eventType === 'order.paid' || eventType === 'payment_link.paid') &&
-             status === 'paid';
+      // Match backend logic: accept these event type + status combinations
+      if (eventType === 'order.paid' && status === 'paid') return true;
+      if (eventType === 'payment_link.paid' && status === 'paid') return true;
+      if (eventType === 'payment.captured' && status === 'captured') return true;
+      if (eventType === 'payment.authorized' && status === 'authorized') return true;
+
+      return false;
     });
+
+    // Deduplicate by Entity ID (same logic as backend)
+    const entityIdMap = new Map();
+    allValidTransactions.forEach(txn => {
+      const entityId = txn.paymentId || txn['Entity ID'];
+      if (!entityId) return; // Skip if no Entity ID
+
+      const eventType = txn.eventType || txn.event || txn['Event Type'] || '';
+      const existing = entityIdMap.get(entityId);
+
+      if (!existing) {
+        entityIdMap.set(entityId, txn);
+        return;
+      }
+
+      // Priority: captured > paid > authorized
+      const eventPriority = {
+        'payment.captured': 3,
+        'order.paid': 2,
+        'payment_link.paid': 2,
+        'payment.authorized': 1
+      };
+
+      const currentPriority = eventPriority[eventType] || 0;
+      const existingEventType = existing.eventType || existing.event || existing['Event Type'] || '';
+      const existingPriority = eventPriority[existingEventType] || 0;
+
+      if (currentPriority > existingPriority) {
+        entityIdMap.set(entityId, txn);
+      }
+    });
+
+    const paidOrderTransactions = Array.from(entityIdMap.values());
 
     console.log(`📋 Transaction Filtering:`, {
       total: transactions.length,
@@ -209,12 +246,50 @@ export default function Admin() {
     const now = new Date();
     let previousPeriodTxns = [];
 
-    // First, get only paid orders from transactions
-    const allPaidOrders = transactions.filter(txn => {
+    // First, get only valid paid orders from transactions (matching updated backend logic)
+    const allValidOrders = transactions.filter(txn => {
       const eventType = txn.eventType || txn.event || txn['Event Type'] || '';
       const status = txn.status || txn.Status || '';
-      return (eventType === 'order.paid' || eventType === 'payment_link.paid') && status === 'paid';
+
+      if (eventType === 'order.paid' && status === 'paid') return true;
+      if (eventType === 'payment_link.paid' && status === 'paid') return true;
+      if (eventType === 'payment.captured' && status === 'captured') return true;
+      if (eventType === 'payment.authorized' && status === 'authorized') return true;
+
+      return false;
     });
+
+    // Deduplicate by Entity ID
+    const entityIdMapForGrowth = new Map();
+    allValidOrders.forEach(txn => {
+      const entityId = txn.paymentId || txn['Entity ID'];
+      if (!entityId) return;
+
+      const eventType = txn.eventType || txn.event || txn['Event Type'] || '';
+      const existing = entityIdMapForGrowth.get(entityId);
+
+      if (!existing) {
+        entityIdMapForGrowth.set(entityId, txn);
+        return;
+      }
+
+      const eventPriority = {
+        'payment.captured': 3,
+        'order.paid': 2,
+        'payment_link.paid': 2,
+        'payment.authorized': 1
+      };
+
+      const currentPriority = eventPriority[eventType] || 0;
+      const existingEventType = existing.eventType || existing.event || existing['Event Type'] || '';
+      const existingPriority = eventPriority[existingEventType] || 0;
+
+      if (currentPriority > existingPriority) {
+        entityIdMapForGrowth.set(entityId, txn);
+      }
+    });
+
+    const allPaidOrders = Array.from(entityIdMapForGrowth.values());
 
     if (timeFilter === 'today') {
       const yesterday = new Date(now);
@@ -675,7 +750,7 @@ export default function Admin() {
                       <h2>📦 Total Orders Breakdown</h2>
                       <p style={{ marginBottom: '16px', opacity: 0.7 }}>
                         Filter: <strong>{timeFilter === 'all' ? 'All Time' : timeFilter === 'today' ? 'Today' : timeFilter === 'week' ? 'Last 7 Days' : timeFilter === 'month' ? 'Last 30 Days' : 'Custom'}</strong> •
-                        Showing only <code>order.paid</code> and <code>payment_link.paid</code> events with <code>status='paid'</code>
+                        Showing <code>order.paid</code>, <code>payment_link.paid</code>, <code>payment.captured</code>, and <code>payment.authorized</code> events (deduplicated by Entity ID)
                       </p>
 
                       <div className="modal-table-container">

@@ -254,17 +254,58 @@ function calculateLeaderboard(masterData, paymentsData) {
     }
 
     // Calculate total sales for this team
-    // Only count order.paid and payment_link.paid events to avoid duplicate counting
-    const teamPayments = paymentsData.filter(payment => {
+    // Accept multiple event types but deduplicate by Entity ID to avoid counting same transaction twice
+    const allTeamPayments = paymentsData.filter(payment => {
       const paymentAccountId = payment['Razorpay Account ID'];
       const eventType = payment['Event Type'];
       const status = payment['Status'];
 
-      // Match by Account ID and only count final payment events
-      return (paymentAccountId === accountId) &&
-             (eventType === 'order.paid' || eventType === 'payment_link.paid') &&
-             (status === 'paid');
+      // Match by Account ID
+      if (paymentAccountId !== accountId) return false;
+
+      // Accept these event type + status combinations:
+      if (eventType === 'order.paid' && status === 'paid') return true;
+      if (eventType === 'payment_link.paid' && status === 'paid') return true;
+      if (eventType === 'payment.captured' && status === 'captured') return true;
+      if (eventType === 'payment.authorized' && status === 'authorized') return true;
+
+      return false;
     });
+
+    // Deduplicate by Entity ID (in case of duplicate events for same transaction)
+    // Priority: captured > authorized > paid (take the most recent/final event)
+    const entityIdMap = new Map();
+    allTeamPayments.forEach(payment => {
+      const entityId = payment['Entity ID'];
+      if (!entityId) return; // Skip if no Entity ID
+
+      const eventType = payment['Event Type'];
+      const existing = entityIdMap.get(entityId);
+
+      // If no existing entry, add it
+      if (!existing) {
+        entityIdMap.set(entityId, payment);
+        return;
+      }
+
+      // If existing entry, keep the higher priority one
+      const eventPriority = {
+        'payment.captured': 3,
+        'order.paid': 2,
+        'payment_link.paid': 2,
+        'payment.authorized': 1
+      };
+
+      const currentPriority = eventPriority[eventType] || 0;
+      const existingPriority = eventPriority[existing['Event Type']] || 0;
+
+      if (currentPriority > existingPriority) {
+        entityIdMap.set(entityId, payment);
+      }
+    });
+
+    // Get deduplicated payments
+    const teamPayments = Array.from(entityIdMap.values());
 
     const totalSales = teamPayments.reduce((sum, payment) => {
       const amount = parseFloat(payment['Amount']) || 0;
