@@ -272,19 +272,26 @@ function calculateLeaderboard(masterData, paymentsData) {
       return false;
     });
 
-    // Deduplicate by Entity ID (in case of duplicate events for same transaction)
+    // Deduplicate by Order ID (primary) or Entity ID (fallback)
+    // This handles cases where order.paid and payment.captured have different Entity IDs but same Order ID
     // Priority: captured > authorized > paid (take the most recent/final event)
-    const entityIdMap = new Map();
+    const deduplicationMap = new Map();
     allTeamPayments.forEach(payment => {
       const entityId = payment['Entity ID'];
-      if (!entityId) return; // Skip if no Entity ID
+      const orderId = payment['Order ID'];
+
+      // Skip if no identifier at all
+      if (!entityId && !orderId) return;
+
+      // Use Order ID as primary deduplication key if available, otherwise use Entity ID
+      const deduplicationKey = orderId || entityId;
 
       const eventType = payment['Event Type'];
-      const existing = entityIdMap.get(entityId);
+      const existing = deduplicationMap.get(deduplicationKey);
 
       // If no existing entry, add it
       if (!existing) {
-        entityIdMap.set(entityId, payment);
+        deduplicationMap.set(deduplicationKey, payment);
         return;
       }
 
@@ -300,12 +307,12 @@ function calculateLeaderboard(masterData, paymentsData) {
       const existingPriority = eventPriority[existing['Event Type']] || 0;
 
       if (currentPriority > existingPriority) {
-        entityIdMap.set(entityId, payment);
+        deduplicationMap.set(deduplicationKey, payment);
       }
     });
 
     // Get deduplicated payments
-    const teamPayments = Array.from(entityIdMap.values());
+    const teamPayments = Array.from(deduplicationMap.values());
 
     const totalSales = teamPayments.reduce((sum, payment) => {
       const amount = parseFloat(payment['Amount']) || 0;
